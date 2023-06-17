@@ -37,7 +37,7 @@ interface StarscapeOptions {
         changeChance?: ChangeChance;
     },
 
-    /** Max FPS */
+    /** Max FPS; < 1: no limit */
     fps?: number;
 
     /** How fast the the engine runs: 0 < slower < 1 (default) < faster */
@@ -84,7 +84,7 @@ export default class Starscape {
             this._stars.push(new Star(this._starOptions));
         }
 
-        if (fps) {
+        if (fps > 0) {
             this._fps = fps / 1000;
         } else {
             this._fps = 0;
@@ -96,6 +96,7 @@ export default class Starscape {
             this.start();
         }
     }
+
     start() {
         if (this._endOfLife === true) {
             this.end();
@@ -107,6 +108,7 @@ export default class Starscape {
 
         this._animationFrameId = requestAnimationFrame((timestamp: number) => this.tick(timestamp));
     }
+
     tick(timestamp: number) {
         if (this._endOfLife === true) {
             this.end();
