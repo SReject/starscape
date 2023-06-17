@@ -18,6 +18,7 @@ globalThis.starscape = new Starscape({
         }
     },
     speed: 1,
+    fps: -1,
     start: true
 });
 
