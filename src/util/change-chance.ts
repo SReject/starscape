@@ -1,9 +1,21 @@
 export interface ChangeChanceList {
+
+    /* chance the star will move */
     move: number,
+
+    /* chance the star will change size */
     resize: number,
+
+    /* chance the star will rotate */
     rotate: number,
+
+    /* chance the star will change color */
     recolor: number,
+
+    /* chance the star will brighten */
     brighten: number,
+
+    /* chance the star will change shape */
     reshape: number
 }
 
@@ -24,8 +36,10 @@ const defaultChance : ChangeChanceList = (() : ChangeChanceList => {
     return <ChangeChanceList>defaults;
 })();
 
+/** Chance that an aspect will by dynamic/change */
 export type ChangeChance = false | Number | Partial<ChangeChanceList>;
 
+/** Resolves input to a realized ChangeChanceList */
 export default (changeChance?: ChangeChance) : ChangeChanceList => {
 
     if (changeChance == null) {
