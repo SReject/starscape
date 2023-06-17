@@ -11,39 +11,54 @@ import {
 
 
 interface StarscapeOptions {
+
+    /** Canvas element to draw to */
     canvas: HTMLCanvasElement;
 
+    /** Number of stars to maintain */
     stars: number;
 
+    /** Aspect bounds for each star */
     bounds: {
+
+        /** How long the star will last */
         lifespan: MinMax;
+
+        /** The bounds of the star's size */
         size: MinMax;
+
+        /** How many full rotations the star can go through */
         rotate: MinMax;
+
+        /** The brightness of the star */
         brilliance: MinMax;
+
+        /** Chance for aspects of the star to change */
         changeChance?: ChangeChance;
     },
 
+    /** Max FPS */
     fps?: number;
 
+    /** How fast the the engine runs: 0 < slower < 1 (default) < faster */
     speed?: number;
 
+    /** Auto start */
     start?: boolean;
 }
 
 export default class Starscape {
+
+    private _canvas : { element: HTMLCanvasElement, ctx: CanvasRenderingContext2D };
+    private _starOptions: StarOptions;
     private _stars : Star[] = [];
+    private _fps: number;
+    private _speed: number;
 
     private _animationFrameId?: number;
     private _lastTimestamp: number;
+
     private _endOfLife : boolean = false;
-
-    private _starOptions: StarOptions;
-
-    private _canvas : { element: HTMLCanvasElement, ctx: CanvasRenderingContext2D };
-
-    private _fps: number;
-
-    private _speed: number;
 
     constructor(options: StarscapeOptions) {
         const { canvas, stars, bounds, fps, speed, start } = options;
@@ -83,6 +98,7 @@ export default class Starscape {
     }
     start() {
         if (this._endOfLife === true) {
+            this.end();
             throw new Error('end of life');
         }
         if (this._animationFrameId) {
@@ -93,6 +109,7 @@ export default class Starscape {
     }
     tick(timestamp: number) {
         if (this._endOfLife === true) {
+            this.end();
             throw new Error('end of life');
         }
         this._animationFrameId = requestAnimationFrame((timestamp: number) => this.tick(timestamp));
@@ -104,10 +121,10 @@ export default class Starscape {
         }
         this._lastTimestamp = timestamp;
 
-        // clear canvas
         const { width, height } = this._canvas.element;
         const ctx = this._canvas.ctx;
 
+        // clear canvas
         ctx.clearRect(0, 0, width, height);
 
         this._stars = this._stars.map((star: Star) : Star => {
@@ -127,8 +144,21 @@ export default class Starscape {
             ctx.fillStyle = `rgba(255, 255, 255, ${brilliance})`
             ctx.fill();
 
-
             return star;
         });
+    };
+
+    end() {
+        if (this._animationFrameId) {
+            cancelAnimationFrame(this._animationFrameId);
+        }
+        this._canvas = null;
+        this._starOptions = null;
+        this._stars = null;
+        this._fps = null;
+        this._speed = null;
+        this._animationFrameId = null;
+        this._lastTimestamp = null;
+        this._endOfLife = true
     }
 }
