@@ -1,0 +1,13 @@
+{
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "tsc",
+        "cleanup": "node ./scripts/cleanup.js",
+        "serve": "node ./scripts/serve.js",
+        "dev": "npm run cleanup && npm run build && npm run serve"
+    },
+    "devDependencies": {
+        "typescript": "^5.1.3"
+    }
+}
