@@ -4,8 +4,11 @@ import {
     type ChangeChance
 } from './util/change-chance.js';
 
+import {
+    default as resolveMinMax,
+    type MinMax
+} from './util/resolve-min-max.js';
 
-type MinMax = number | { min?: number, max: number };
 
 interface StarscapeOptions {
     canvas: HTMLCanvasElement;
@@ -24,16 +27,6 @@ interface StarscapeOptions {
 
     start?: boolean;
 }
-
-const resolveMinMax = (value: MinMax) : {min: number, max: number} => {
-    if (typeof value === 'number') {
-        return {min: value, max: value};
-    }
-    return {
-        min: value.min || 0,
-        max: value.max
-    }
-};
 
 export default class Starscape {
     private _stars : Star[] = [];
