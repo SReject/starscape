@@ -45,7 +45,7 @@ jobs:
           branch: 'gh-pages'
 
       - name: Remove past site files
-        run: find ./ -name "*" | grep "\.(?:html?|css|js|png|jpg)$" | xargs rm -r
+        run: find ./ -name "*" | grep "\.(?:html?|css|js|png|jpg)$" | xargs -0 -r rm -r
 
       - name: Download site artifact
         uses: actions/download-artifact@v3
