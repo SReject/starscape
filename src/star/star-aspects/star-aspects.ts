@@ -28,7 +28,7 @@ export interface StarAspectsOptions {
 
     size: Bounds;
     rotate: Bounds;
-    color: { red: Bounds, green: Bounds, blue: Bounds }
+    color: Bounds;
     brillance: Bounds;
 
     changeChance: ChangeChanceList;

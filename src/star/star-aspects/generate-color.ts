@@ -1,4 +1,5 @@
 import {
+    default as resolveMinMax,
     type MinMax
 } from '../../util/resolve-min-max.js';
 
@@ -15,51 +16,37 @@ export type RGB = {
     blue:  number
 }
 
-const getColorBounds = (minMax?: number | MinMax) : { offset: number, range: number } => {
-    if (minMax == null) {
-        return { offset: 255, range: 0 };
+const generateColor = (bias: MinMax) : RGB => {
+    const { min, max } = resolveMinMax(bias);
+
+    const a1 = min + Math.floor(Math.random() * (1 + max));
+    const a2 = min + Math.floor(Math.random() * (1 + max));
+
+    switch (Math.floor(Math.random() * 7)) {
+        case 0: // R## - Red
+            return { red: 255, green: a1, blue: a2 }
+
+        case 1: // RG# - Yellow
+            return { red: 255, green: 255, blue: a1 }
+
+        case 2: // R#B - Purple
+            return { red: 255, green: a1, blue: 255 }
+
+        case 3: // #G# - Green
+            return { red: a1, green: 255, blue: a2 }
+
+        case 4: // #GB - Cyan
+            return { red: a1, green: 255, blue: 255 }
+
+        case 5: // ##B - Blue;
+            return { red: a1, green: a2, blue: 255 }
+
+        default: // RGB - White;
+            return { red: 255, green: 255, blue: 255 }
     }
-
-    if (typeof minMax === 'number') {
-        return { offset: minMax, range: 0 };
-    }
-
-    let { min, max } = minMax;
-
-    if (min == null) {
-        return { offset: max, range: 0 };
-    }
-
-    if (min > max) {
-        let temp = min;
-        min = max;
-        max = temp;
-    }
-
-    return { offset: min, range: max - min };
 }
 
-const generateColor = (bounds) : RGB => {
-    const { red, green, blue } = bounds;
-
-    const rb = getColorBounds(red);
-    const gb = getColorBounds(green);
-    const bb = getColorBounds(blue);
-
-    return {
-        red:   rb.offset + Math.random() * rb.range,
-        green: gb.offset + Math.random() * gb.range,
-        blue:  bb.offset + Math.random() * bb.range
-    };
-}
-
-export interface ColorBounds {
-    red?:   MinMax,
-    green?: MinMax,
-    blue?:  MinMax
-}
-
-export default (bounds: ColorBounds, changeChance: number) : Aspect<RGB> => {
+export default (bounds: MinMax, changeChance: number) : Aspect<RGB> => {
     const start = generateColor(bounds);
 
     if (Math.random() >= changeChance) {

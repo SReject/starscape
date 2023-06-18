@@ -31,7 +31,7 @@ interface StarscapeOptions {
         rotate: MinMax;
 
         /** RGB color ranges */
-        color: { red: MinMax, green: MinMax, blue: MinMax };
+        color: MinMax;
 
         /** The brightness of the star */
         brilliance: MinMax;
@@ -83,11 +83,7 @@ export default class Starscape {
             lifeSpan: resolveMinMax(bounds.lifespan),
             size: resolveMinMax(bounds.size),
             rotate: resolveMinMax(bounds.rotate),
-            color: {
-                red: resolveMinMax(bounds.color.red),
-                green: resolveMinMax(bounds.color.green),
-                blue: resolveMinMax(bounds.color.blue),
-            },
+            color: resolveMinMax(bounds.color),
             brillance: resolveMinMax(bounds.brilliance),
             changeChance: resolveChangeChance(bounds.changeChance)
         };
@@ -167,7 +163,9 @@ export default class Starscape {
             // TODO: Improve star drawing
             ctx.beginPath();
             ctx.arc(position.x, position.y, size, 0, 2 * Math.PI, false);
-            ctx.fillStyle = `rgba(${color.red}, ${color.green}, ${color.blue}, ${brilliance})`
+            ctx.fillStyle = `rgba(${color.red}, ${color.green}, ${color.blue}, ${brilliance})`;
+            ctx.shadowColor = `rgb(${color.red}, ${color.green}, ${color.blue})`;
+
             ctx.fill();
 
             return star;
