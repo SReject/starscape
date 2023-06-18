@@ -54,6 +54,8 @@ jobs:
 
       - name: Push Changes
         run: |
+          git config --global user.email "sreject@users.noreply.github.com"
+          git config --global user.name "SReject"
           git commit -a -m "Updated"
           git push origin gh-pages
 
