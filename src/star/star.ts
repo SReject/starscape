@@ -6,6 +6,8 @@ import {
 type DispatchFnc = (target: Star, ...args: unknown[]) => void;
 
 export interface StarOptions extends StarAspectsOptions {
+
+    /** How long the star will live */
     lifeSpan: {
         min: number;
         max: number;
@@ -33,19 +35,32 @@ export default class Star {
     get rotation() {
         return this._aspects.rotation;
     }
+    get color() {
+        return this._aspects.color;
+    }
     get brilliance() {
         return this._aspects.brilliance;
     }
+
     get aspects() {
         return {
             position: this.position,
             size: this.size,
             rotation: this.rotation,
+            color: this.color,
             brilliance: this.brilliance
         }
     }
 
-    update(timestamp: number, dispatch: DispatchFnc, speed: number = 1) {
+    update(
+        timestamp: number,
+
+        /** Called when the star has reached its end of life */
+        dispatch: DispatchFnc,
+
+        /** The speed at which time is moving */
+        speed: number = 1
+    ) {
         if (this._endOfLife === true) {
             throw new Error('star was dispatched');
         }
@@ -65,9 +80,9 @@ export default class Star {
     }
 
     end() {
+        this._aspects = null;
+        this._lifeSpan = null;
+        this._startTime = null;
         this._endOfLife = true;
-        delete this._aspects;
-        delete this._lifeSpan;
-        delete this._startTime;
     }
 }

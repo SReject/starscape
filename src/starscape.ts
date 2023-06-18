@@ -30,6 +30,8 @@ interface StarscapeOptions {
         /** How many full rotations the star can go through */
         rotate: MinMax;
 
+        color: { red: MinMax, green: MinMax, blue: MinMax };
+
         /** The brightness of the star */
         brilliance: MinMax;
 
@@ -39,6 +41,8 @@ interface StarscapeOptions {
 
     /** Max FPS; < 1: no limit */
     fps?: number;
+
+    fpsCounter?: false | HTMLElement;
 
     /** How fast the the engine runs: 0 < slower < 1 (default) < faster */
     speed?: number;
@@ -53,6 +57,7 @@ export default class Starscape {
     private _starOptions: StarOptions;
     private _stars : Star[] = [];
     private _fps: number;
+    private _fpsCounter: false | HTMLElement;
     private _speed: number;
 
     private _animationFrameId?: number;
@@ -76,6 +81,11 @@ export default class Starscape {
             lifeSpan: resolveMinMax(bounds.lifespan),
             size: resolveMinMax(bounds.size),
             rotate: resolveMinMax(bounds.rotate),
+            color: {
+                red: resolveMinMax(bounds.color.red),
+                green: resolveMinMax(bounds.color.green),
+                blue: resolveMinMax(bounds.color.blue),
+            },
             brillance: resolveMinMax(bounds.brilliance),
             changeChance: resolveChangeChance(bounds.changeChance)
         };
@@ -88,6 +98,12 @@ export default class Starscape {
             this._fps = fps / 1000;
         } else {
             this._fps = 0;
+        }
+
+        if (options.fpsCounter) {
+            this._fpsCounter = options.fpsCounter;
+        } else {
+            this._fpsCounter = false;
         }
 
         this._speed = speed || 1;
@@ -114,13 +130,19 @@ export default class Starscape {
             this.end();
             throw new Error('end of life');
         }
+
         this._animationFrameId = requestAnimationFrame((timestamp: number) => this.tick(timestamp));
 
         // Limit FPS
-        if (this._fps > 0 && this._lastTimestamp && (timestamp - this._lastTimestamp) < this._fps) {
-            this._lastTimestamp = timestamp;
-            return;
+        if (this._lastTimestamp) {
+            if (this._fps > 0 && (timestamp - this._lastTimestamp) < this._fps) {
+                this._lastTimestamp = timestamp;
+                return;
+            } else if (this._fpsCounter) {
+                this._fpsCounter.innerText = String(Math.floor(1000 / (timestamp - this._lastTimestamp)));
+            }
         }
+
         this._lastTimestamp = timestamp;
 
         const { width, height } = this._canvas.element;
@@ -138,12 +160,12 @@ export default class Starscape {
                 this._speed
             );
 
-            const { position, size, rotation, brilliance } = star;
+            const { position, size, rotation, color, brilliance } = star;
 
             // TODO: Improve star drawing
             ctx.beginPath();
             ctx.arc(position.x, position.y, size, 0, 2 * Math.PI, false);
-            ctx.fillStyle = `rgba(255, 255, 255, ${brilliance})`
+            ctx.fillStyle = `rgba(${color.red}, ${color.green}, ${color.blue}, ${brilliance})`
             ctx.fill();
 
             return star;
@@ -158,6 +180,7 @@ export default class Starscape {
         this._starOptions = null;
         this._stars = null;
         this._fps = null;
+        this._fpsCounter = null;
         this._speed = null;
         this._animationFrameId = null;
         this._lastTimestamp = null;

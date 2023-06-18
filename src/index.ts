@@ -8,10 +8,33 @@ globalThis.starscape = new Starscape({
     canvas: canvas,
     stars: 100,
     bounds: {
-        lifespan: { min: 3000, max: 10000 },
-        size: {min: 0, max: 5},
+        lifespan: {
+            min: 3000,
+            max: 10000
+        },
+        size: {
+            min: 0,
+            max: 5
+        },
         rotate: 3,
-        brilliance: { min: 0, max: 1},
+        color: {
+            red: {
+                min: 224,
+                max: 255
+            },
+            green: {
+                min: 224,
+                max: 255
+            },
+            blue: {
+                min: 224,
+                max: 255
+            }
+        },
+        brilliance: {
+            min: 0,
+            max: 1
+        },
         changeChance: {
             move: 0.025,
             resize: 1
@@ -19,6 +42,7 @@ globalThis.starscape = new Starscape({
     },
     speed: 1,
     fps: -1,
+    fpsCounter: document.getElementById('fps-counter'),
     start: true
 });
 
