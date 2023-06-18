@@ -41,7 +41,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
-        branch: 'gh-pages'
+        with:
+          branch: 'gh-pages'
 
       - name: Remove past site files
         run: find ./ -name "*" | grep "\.(?:html?|css|js|png|jpg)$" | xargs rm -r
