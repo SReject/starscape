@@ -1,0 +1,62 @@
+name: Publish to Github Pages
+
+# Only runs
+# - after master branch changes
+# - when a user specifically requests the workflow to run on a branch
+on:
+  workflow_dispatch:
+  push:
+    branches: master
+
+jobs:
+
+  build:
+    name: Compile TS to JS
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Setup Nodejs
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.14.0'
+
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Install starscape Dependencies
+        run: npm install
+
+      - name: Compile TS to JS
+        run: npm run build
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: site
+          path: ./build/
+
+  publish:
+    name: Publish to GH-Pages Branch
+    needs: [build]
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        branch: 'gh-pages'
+
+      - name: Remove past site files
+        run: find ./ -name "*" | grep "\.(?:html?|css|js|png|jpg)$" | xargs rm -r
+
+      - name: Download site artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: site
+
+      - name: Push Changes
+        run: |
+          git commit -a -m "Updated"
+          git push origin gh-pages
+
+
+
+
+
