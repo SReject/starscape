@@ -58,7 +58,7 @@ jobs:
           git config --global user.name "SReject"
           git add --all
           git commit -a -m "Updated"
-          git push origin gh-pages
+          git push
 
 
 
