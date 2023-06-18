@@ -30,6 +30,7 @@ interface StarscapeOptions {
         /** How many full rotations the star can go through */
         rotate: MinMax;
 
+        /** RGB color ranges */
         color: { red: MinMax, green: MinMax, blue: MinMax };
 
         /** The brightness of the star */
@@ -42,6 +43,7 @@ interface StarscapeOptions {
     /** Max FPS; < 1: no limit */
     fps?: number;
 
+    /** HTML element to draw fps count to; false to disable */
     fpsCounter?: false | HTMLElement;
 
     /** How fast the the engine runs: 0 < slower < 1 (default) < faster */
